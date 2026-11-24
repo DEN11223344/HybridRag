@@ -1,0 +1,60 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 3 0 R 5 0 R ] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /MediaBox [ 0 0 612 792 ] /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 384 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(1. Consolidated Financial Statement Q4 2025) '
+(Consolidated net revenue for Q4 reached $840 million, an increase of 22% year-over-year.) '
+(Operating profit expanded to $250 million with gross margin reaching 68% across all core sectors.) '
+(Free cash flow for the trailing twelve months totaled $310 million after deducting $160 million in Capex.) '
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /MediaBox [ 0 0 612 792 ] /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 461 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(2. Business Segment Financial Breakdown) '
+(Financial Performance Table:) '
+(Segment               Revenue   Operating_Income  Growth) '
+(Cloud Infrastructure  $420M     $135M             +34%) '
+(Enterprise Software   $280M     $90M              +15%) '
+(Hardware Systems      $140M     $25M              +6%) '
+() '
+(The Cloud Infrastructure division represented the largest growth vector driven by AI workload deployments.) '
+ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000129 00000 n 
+0000000306 00000 n 
+0000000741 00000 n 
+0000000918 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R /Info << /Title (Quarterly Financials Q4 2025) >> >>
+startxref
+1430
+%%EOF

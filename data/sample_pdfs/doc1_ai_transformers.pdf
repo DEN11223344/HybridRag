@@ -1,0 +1,57 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 3 0 R 5 0 R ] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /MediaBox [ 0 0 612 792 ] /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 502 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(1. Executive Summary and Architecture Overview) '
+(The Transformer architecture replaces recurrent neural networks with multi-head self-attention mechanisms.) '
+(This allows computing scaled dot-product attention across all input tokens simultaneously in parallel.) '
+(Dense vector representations capture semantic nuances in high-dimensional continuous space.) '
+(ALiBi and Rotary Positional Embeddings provide strong length extrapolation for large context windows.) '
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /MediaBox [ 0 0 612 792 ] /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 414 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(2. Computational Complexity and Attention Variations) '
+(Standard multi-head self-attention exhibits O\(N^2\) computational time and memory complexity.) '
+(When sequence length N scales to 32k tokens, linear attention approximations and FlashAttention become essential.) '
+(Cross-encoders are utilized in downstream reranking stages to accurately score query-document relevance.) '
+ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000129 00000 n 
+0000000306 00000 n 
+0000000859 00000 n 
+0000001036 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R /Info << /Title (AI Transformers Research) >> >>
+startxref
+1501
+%%EOF

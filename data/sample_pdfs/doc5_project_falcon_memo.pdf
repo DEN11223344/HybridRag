@@ -1,0 +1,40 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 3 0 R ] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >> /MediaBox [ 0 0 612 792 ] /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 429 >>
+stream
+BT
+/F1 12 Tf
+50 720 Td
+16 TL
+(PROJECT FALCON DECLASSIFIED ARCHIVE MEMORANDUM) '
+(DATE: OCTOBER 14, 1988) '
+(SUBJECT: LONG-DURATION AVIONICS TELEMETRY FLIGHT TEST RESULTS) '
+() '
+(Flight telemetry testing for Project Falcon completed 4,200 continuous hours without avionics bus degradation.) '
+(All telemetry frequencies were maintained within 0.05 kHz tolerance.) '
+(Signed: Chief Test Director, Flight Operations Division.) '
+ET
+endstream
+endobj
+xref
+0 5
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000123 00000 n 
+0000000300 00000 n 
+trailer
+<< /Size 5 /Root 1 0 R /Info << /Title (Project Falcon Memo 1988) >> >>
+startxref
+780
+%%EOF
