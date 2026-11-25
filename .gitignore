@@ -1,9 +1,9 @@
+# Python bytecode and cache
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -20,21 +20,49 @@ wheels/
 .installed.cfg
 *.egg
 
-.env
+# Virtual environments
 .venv/
 venv/
+env/
 ENV/
+ENV*/
 
-# Qdrant data and uploads
+# Testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Environment files and credentials
+.env
+*.token
+*.pem
+*.key
+
+# Runtime uploaded data and database storage (preserve only .gitkeep)
 data/uploads/*
 !data/uploads/.gitkeep
 data/extracted/*
 !data/extracted/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
-data/qdrant_storage/
+data/qdrant_storage/*
+!data/qdrant_storage/.gitkeep
 
-# IDE / OS
+# Logs
+*.log
+logs/
+
+# IDE, OS and Editor files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
