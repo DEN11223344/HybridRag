@@ -63,7 +63,7 @@ qdrant = QdrantManager.get_instance(
 doc_registry = {}
 
 @router.post("/upload")
-async def upload_documents(files: List[Any] = None):
+async def upload_documents(files: List[UploadFile] = File(...)):
     if not files:
         raise HTTPException(status_code=400, detail="No files uploaded.")
 

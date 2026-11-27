@@ -12,7 +12,7 @@ if HAS_PYDANTIC:
         document_ids: Optional[List[str]] = None
         top_k: int = 5
         mode: str = "hybrid"  # "hybrid", "dense", "bm25", "splade", "bm25_dense", "bm25_splade"
-        rerank: bool = True
+        rerank: bool = False
         score_threshold: Optional[float] = None
 
     class SearchResultChunk(BaseModel):
@@ -43,7 +43,7 @@ else:
             self.document_ids = kwargs.get("document_ids")
             self.top_k = kwargs.get("top_k", 5)
             self.mode = kwargs.get("mode", "hybrid")
-            self.rerank = kwargs.get("rerank", True)
+            self.rerank = kwargs.get("rerank", False)
             self.score_threshold = kwargs.get("score_threshold")
 
     class SearchResultChunk:

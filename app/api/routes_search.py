@@ -1,5 +1,6 @@
 import time
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from typing import List, Optional
 
 try:
@@ -58,7 +59,7 @@ def execute_retrieval(
     mode: str = "hybrid",
     top_k: int = 5,
     document_ids: Optional[List[str]] = None,
-    apply_rerank: bool = True,
+    apply_rerank: Optional[bool] = None,
     score_threshold: Optional[float] = None,
 ) -> SearchResponse:
     start_time = time.time()
@@ -74,18 +75,21 @@ def execute_retrieval(
     elif mode == "splade":
         candidates = splade_retriever.retrieve(query, top_k=retrieval_k, document_ids=document_ids)
     elif mode in ("bm25_dense", "dense_bm25"):
-        list_bm25 = bm25_retriever.retrieve(query, top_k=retrieval_k, document_ids=document_ids)
-        list_dense = dense_retriever.retrieve(query, top_k=retrieval_k, document_ids=document_ids)
-        candidates = fusion.fuse([list_bm25, list_dense], top_k=retrieval_k)
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            f_bm25 = executor.submit(bm25_retriever.retrieve, query, retrieval_k, document_ids)
+            f_dense = executor.submit(dense_retriever.retrieve, query, retrieval_k, document_ids)
+            candidates = fusion.fuse([f_bm25.result(), f_dense.result()], top_k=retrieval_k)
     elif mode in ("bm25_splade", "splade_bm25"):
-        list_bm25 = bm25_retriever.retrieve(query, top_k=retrieval_k, document_ids=document_ids)
-        list_splade = splade_retriever.retrieve(query, top_k=retrieval_k, document_ids=document_ids)
-        candidates = fusion.fuse([list_bm25, list_splade], top_k=retrieval_k)
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            f_bm25 = executor.submit(bm25_retriever.retrieve, query, retrieval_k, document_ids)
+            f_splade = executor.submit(splade_retriever.retrieve, query, retrieval_k, document_ids)
+            candidates = fusion.fuse([f_bm25.result(), f_splade.result()], top_k=retrieval_k)
     elif mode == "hybrid":
-        list_dense = dense_retriever.retrieve(query, top_k=retrieval_k, document_ids=document_ids)
-        list_bm25 = bm25_retriever.retrieve(query, top_k=retrieval_k, document_ids=document_ids)
-        list_splade = splade_retriever.retrieve(query, top_k=retrieval_k, document_ids=document_ids)
-        candidates = fusion.fuse([list_bm25, list_splade, list_dense], top_k=retrieval_k)
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            f_dense = executor.submit(dense_retriever.retrieve, query, retrieval_k, document_ids)
+            f_bm25 = executor.submit(bm25_retriever.retrieve, query, retrieval_k, document_ids)
+            f_splade = executor.submit(splade_retriever.retrieve, query, retrieval_k, document_ids)
+            candidates = fusion.fuse([f_bm25.result(), f_splade.result(), f_dense.result()], top_k=retrieval_k)
     else:
         raise HTTPException(
             status_code=400,
@@ -95,6 +99,9 @@ def execute_retrieval(
     retrieval_latency = (time.time() - start_time) * 1000.0
     rerank_latency = 0.0
     final_chunks = candidates
+
+    if apply_rerank is None:
+        apply_rerank = settings.enable_reranker
 
     if apply_rerank and candidates:
         r_start = time.time()

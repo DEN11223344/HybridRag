@@ -7,24 +7,26 @@ ENV OMP_NUM_THREADS=4
 ENV MKL_NUM_THREADS=4
 ENV TOKENIZERS_PARALLELISM=false
 
-# Install OS dependencies: Tesseract OCR, compilers, build tools, curl
+# Install OS dependencies: curl for healthcheck
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    tesseract-ocr \
-    tesseract-ocr-eng \
-    libtesseract-dev \
-    build-essential \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+  curl \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 # Copy dependency requirements
 COPY requirements.txt .
 
-# Install CPU PyTorch and Python packages
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir -r requirements.txt
+# Install CPU PyTorch (pinned to match requirements.txt) using IPv4 curl resume
+RUN pip install --no-cache-dir --timeout 120 --retries 15 --upgrade pip && \
+  curl -4 -fL --retry 30 --retry-delay 2 --retry-all-errors -C - \
+    -o /tmp/torch-2.2.2+cpu-cp311-cp311-linux_x86_64.whl \
+    "https://download.pytorch.org/whl/cpu/torch-2.2.2%2Bcpu-cp311-cp311-linux_x86_64.whl" && \
+  pip install --no-cache-dir --timeout 120 --retries 15 --resume-retries 50 /tmp/torch-2.2.2+cpu-cp311-cp311-linux_x86_64.whl && \
+  rm -f /tmp/torch-2.2.2+cpu-cp311-cp311-linux_x86_64.whl
+
+# Install Python packages
+RUN pip install --no-cache-dir --timeout 120 --retries 15 --resume-retries 50 -r requirements.txt
 
 # Copy application source code
 COPY . .

@@ -10,10 +10,10 @@ logger = logging.getLogger(__name__)
 class StructureAwareChunker:
     def __init__(
         self,
-        target_chunk_size: int = 512,
-        chunk_overlap: int = 100,
+        target_chunk_size: int = 350,
+        chunk_overlap: int = 50,
         min_chunk_size: int = 100,
-        max_chunk_size: int = 700,
+        max_chunk_size: int = 450,
     ):
         self.target_chunk_size = target_chunk_size
         self.chunk_overlap = chunk_overlap
@@ -151,12 +151,13 @@ class StructureAwareChunker:
                             all_chunks, document_id, document_name, page_number,
                             current_section, accumulated_text, accumulated_tokens, accumulated_type
                         )
-                        # Keep overlap if possible
-                        accumulated_text = []
-                        accumulated_tokens = 0
+                        accumulated_text = self._get_overlap_parts(accumulated_text)
+                        accumulated_tokens = self.estimate_token_count("\n\n".join(accumulated_text)) if accumulated_text else 0
 
                     # If a single block is huge (> max_chunk_size), split by sentences
                     if b_tokens > self.max_chunk_size:
+                        accumulated_text = []
+                        accumulated_tokens = 0
                         sentence_chunks = self._split_by_sentences(b_text)
                         for sent_chunk in sentence_chunks:
                             s_toks = self.estimate_token_count(sent_chunk)
@@ -217,9 +218,34 @@ class StructureAwareChunker:
         )
         chunks.append(chunk)
 
+    def _get_overlap_parts(self, parts: List[str]) -> List[str]:
+        """
+        Returns trailing sentences from `parts` up to `self.chunk_overlap` tokens
+        to preserve context across chunk boundaries.
+        """
+        if self.chunk_overlap <= 0 or not parts:
+            return []
+
+        combined = " ".join(p.strip() for p in parts if p.strip())
+        sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", combined) if s.strip()]
+        if len(sentences) <= 1:
+            return []
+
+        overlap_sents: List[str] = []
+        overlap_toks = 0
+        for s in reversed(sentences[1:]):
+            s_toks = self.estimate_token_count(s)
+            if overlap_toks + s_toks > self.chunk_overlap:
+                break
+            overlap_sents.append(s)
+            overlap_toks += s_toks
+
+        overlap_sents.reverse()
+        return overlap_sents
+
     def _split_by_sentences(self, text: str) -> List[str]:
         """
-        Splits a large paragraph by sentence boundaries respecting target_chunk_size.
+        Splits a large paragraph by sentence boundaries respecting target_chunk_size and chunk_overlap.
         """
         sentences = re.split(r"(?<=[.!?])\s+", text)
         results = []
@@ -233,8 +259,8 @@ class StructureAwareChunker:
             s_toks = self.estimate_token_count(s_clean)
             if cur_toks + s_toks > self.target_chunk_size and cur_toks >= self.min_chunk_size:
                 results.append(" ".join(cur_parts))
-                cur_parts = []
-                cur_toks = 0
+                cur_parts = self._get_overlap_parts(cur_parts)
+                cur_toks = self.estimate_token_count(" ".join(cur_parts)) if cur_parts else 0
             cur_parts.append(s_clean)
             cur_toks += s_toks
 

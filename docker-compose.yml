@@ -28,6 +28,8 @@ services:
     restart: unless-stopped
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     environment:
       - APP_HOST=0.0.0.0
       - APP_PORT=8000
@@ -39,11 +41,16 @@ services:
       - SPLADE_MODEL=prithivida/Splade_PP_en_v1
       - RERANKER_MODEL=BAAI/bge-reranker-base
       - CPU_NUM_THREADS=4
-      - LLM_PROVIDER=mock
+      - TARGET_CHUNK_SIZE=350
+      - CHUNK_OVERLAP=50
+      - MAX_CHUNK_SIZE=450
+      - RRF_K=10
+      - ENABLE_RERANKER=false
       - UPLOAD_DIR=data/uploads
       - EXTRACTED_DIR=data/extracted
       - PROCESSED_DIR=data/processed
     volumes:
+      - ./app:/app/app
       - ./data/uploads:/app/data/uploads
       - ./data/extracted:/app/data/extracted
       - ./data/processed:/app/data/processed

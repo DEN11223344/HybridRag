@@ -20,7 +20,7 @@ if HAS_PYDANTIC:
         document_ids: Optional[List[str]] = None
         top_k: int = 5
         mode: str = "hybrid"
-        rerank: bool = True
+        rerank: bool = False
 
     class AskResponse(BaseModel):
         query: str

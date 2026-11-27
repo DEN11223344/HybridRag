@@ -75,5 +75,46 @@ class TestChunkerAndTables(unittest.TestCase):
             self.assertTrue(hasattr(c, "token_count"))
             self.assertTrue(hasattr(c, "image_references"))
 
+    def test_chunk_overlap_across_blocks_and_sentences(self):
+        chunker = StructureAwareChunker(
+            target_chunk_size=30,
+            chunk_overlap=15,
+            min_chunk_size=15,
+            max_chunk_size=45,
+        )
+        # Multi-block within the same section
+        doc = {
+            "document_id": "overlap-doc",
+            "document_name": "overlap.pdf",
+            "pages": [
+                {
+                    "page_number": 1,
+                    "text_blocks": [
+                        {"text": "First sentence has several words here. Second sentence is the overlap tail.", "section": "Sec 1"},
+                        {"text": "Third sentence starts a new block with more words to trigger flush.", "section": "Sec 1"},
+                        {"text": "Fourth block also has enough words to force another chunk boundary.", "section": "Sec 1"},
+                    ],
+                    "tables": [],
+                    "images": [],
+                }
+            ],
+        }
+        chunks = chunker.chunk_extracted_document(doc)
+        self.assertGreaterEqual(len(chunks), 2)
+        self.assertIn("Third sentence starts a new block with more words to trigger flush.", chunks[0].chunk_text)
+        self.assertIn("Third sentence starts a new block with more words to trigger flush.", chunks[1].chunk_text)
+
+        # Single oversized block split by sentences
+        long_text = (
+            "Sentence one has enough tokens to fill up space. "
+            "Sentence two is the shared boundary sentence. "
+            "Sentence three continues the paragraph with additional detail. "
+            "Sentence four finishes the oversized block cleanly."
+        )
+        sent_chunks = chunker._split_by_sentences(long_text)
+        self.assertGreaterEqual(len(sent_chunks), 2)
+        self.assertIn("Sentence three continues the paragraph with additional detail.", sent_chunks[0])
+        self.assertIn("Sentence three continues the paragraph with additional detail.", sent_chunks[1])
+
 if __name__ == "__main__":
     unittest.main()
